@@ -166,7 +166,7 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
         if (iPadCoords != nil && ![iPadCoords isEqual:@"-1,-1,-1,-1"]) {
           CGRect rect;
           if ([iPadCoordinates count] == 4) {
-           
+
             rect = CGRectMake((int) [[iPadCoordinates objectAtIndex:0] integerValue], (int) [[iPadCoordinates objectAtIndex:1] integerValue], (int) [[iPadCoordinates objectAtIndex:2] integerValue], (int) [[iPadCoordinates objectAtIndex:3] integerValue]);
           } else {
             NSArray *comps = [iPadCoords componentsSeparatedByString:@","];
@@ -527,12 +527,9 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
           }
 
         }
-      [picker addObjectsFromArray:images];
-    }
-    
-    if (message != (id)[NSNull null]) {
-      picker.body = message;
-    }
+
+        [picker addObjectsFromArray:images];
+      }
 
     // if (image != nil && image != (id)[NSNull null]) {
     //     NSMutableArray *files = [self getFile:image];
@@ -540,6 +537,10 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
     //       [picker addAttachmentURL:file withAlternateFilename:nil];
     //     }
     //   }
+    }
+
+    if (message != (id)[NSNull null]) {
+      picker.body = message;
     }
 
     if (phonenumbers != (id)[NSNull null]) {
