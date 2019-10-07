@@ -505,9 +505,7 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
 
     MFMessageComposeViewController *picker = [[MFMessageComposeViewController alloc] init];
     picker.messageComposeDelegate = (id) self;
-    if (message != (id)[NSNull null]) {
-      picker.body = message;
-    }
+
     if (subject != (id)[NSNull null]) {
       [picker setSubject:subject];
     }
@@ -530,6 +528,10 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
 
         }
       [picker addObjectsFromArray:images];
+    }
+    
+    if (message != (id)[NSNull null]) {
+      picker.body = message;
     }
 
     // if (image != nil && image != (id)[NSNull null]) {
