@@ -501,7 +501,7 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
     NSString *phonenumbers = [command.arguments objectAtIndex:1];
     NSString *message = [options objectForKey:@"message"];
     NSString *subject = [options objectForKey:@"subject"];
-    NSString *image = [options objectForKey:@"image"];
+    NSArray *imagenames = [options objectForKey:@"images"];
 
     MFMessageComposeViewController *picker = [[MFMessageComposeViewController alloc] init];
     picker.messageComposeDelegate = (id) self;
@@ -511,14 +511,33 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
     if (subject != (id)[NSNull null]) {
       [picker setSubject:subject];
     }
-    if (image != nil && image != (id)[NSNull null]) {
+
+    if (imagenames != (id)[NSNull null] && imagenames != nil && imagenames.count > 0) {
       BOOL canSendAttachments = [[MFMessageComposeViewController class] respondsToSelector:@selector(canSendAttachments)];
+
       if (canSendAttachments) {
-        NSURL *file = [self getFile:image];
-        if (file != nil) {
-          [picker addAttachmentURL:file withAlternateFilename:nil];
+        NSMutableArray *images = [[NSMutableArray alloc] init];
+        for (NSString* imagename in imagenames) {
+          NSObject *image = [self getImage:imagename];
+
+          if (image == nil) {
+            image = [self getFile:imagename];
+          }
+
+          if (image != nil) {
+            [images addObject:image];
+          }
+
         }
-      }
+      [picker addObjectsFromArray:images];
+    }
+
+    // if (image != nil && image != (id)[NSNull null]) {
+    //     NSMutableArray *files = [self getFile:image];
+    //     if (file != nil) {
+    //       [picker addAttachmentURL:file withAlternateFilename:nil];
+    //     }
+    //   }
     }
 
     if (phonenumbers != (id)[NSNull null]) {
