@@ -2,11 +2,13 @@
 
 [![NPM version][npm-image]][npm-url]
 [![Downloads][downloads-image]][npm-url]
+[![TotalDownloads][total-downloads-image]][npm-url]
 [![Twitter Follow][twitter-image]][twitter-url]
 
 [npm-image]:http://img.shields.io/npm/v/cordova-plugin-x-socialsharing.svg
 [npm-url]:https://npmjs.org/package/cordova-plugin-x-socialsharing
 [downloads-image]:http://img.shields.io/npm/dm/cordova-plugin-x-socialsharing.svg
+[total-downloads-image]:http://img.shields.io/npm/dt/cordova-plugin-x-socialsharing.svg?label=total%20downloads
 [twitter-image]:https://img.shields.io/twitter/follow/eddyverbruggen.svg?style=social&label=Follow%20me
 [twitter-url]:https://twitter.com/eddyverbruggen
 
@@ -162,8 +164,9 @@ var options = {
   subject: 'the subject', // fi. for email
   files: ['', ''], // an array of filenames either locally or remotely
   url: 'https://www.website.com/foo/#bar?a=b',
-  chooserTitle: 'Pick an app' // Android only, you can override the default share sheet title,
-  appPackageName: 'com.apple.social.facebook' // Android only, you can provide id of the App you want to share with
+  chooserTitle: 'Pick an app', // Android only, you can override the default share sheet title
+  appPackageName: 'com.apple.social.facebook', // Android only, you can provide id of the App you want to share with
+  iPadCoordinates: '0,0,0,0' //IOS only iPadCoordinates for where the popover should be point.  Format with x,y,width,height
 };
 
 var onSuccess = function(result) {
@@ -466,6 +469,9 @@ Sharing an image (only images from the internet are supported). If you pass more
 ```
 
 ## 7. Share-popover on iPad
+
+> This no longer works since plugin version 5.5.0, see [this issue](https://github.com/EddyVerbruggen/SocialSharing-PhoneGap-Plugin/issues/1052).
+
 Carlos Sola-Llonch, a user of this plugin, pointed me at an [iOS document](https://developer.apple.com/library/ios/documentation/uikit/reference/UIActivityViewController_Class/Reference/Reference.html)
 stating "On iPad, you must present the view controller in a popover. On iPhone and iPod touch, you must present it modally."
 
@@ -545,3 +551,13 @@ To address query schema issue, after installaing the plugin you can edit the iOS
 ```
 
 The advantage with this method is that editing is done in the config.xml file which will most often be in your source control anyway and hence, changes to it will be reserved.
+
+## 9. NSPhotoLibraryUsageDescription on iOS
+
+This plugin requires permissions to the users photos. On iOS 10+, it is required that you provide a description for this access.
+
+The plugin configures a default description for you. If you do need to customise it, you can set a Cordova variable when installing:
+
+```
+$ cordova plugin add cordova-plugin-x-socialsharing --variable PHOTO_LIBRARY_USAGE_DESCRIPTION="This app uses your photo library" --variable PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION="This app saves images your photo library"
+```
