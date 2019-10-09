@@ -515,24 +515,13 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
 
       if (canSendAttachments) {
         for (NSString* imagename in imagenames) {
-          NSObject *image = [self getImage:imagename];
+          NSData *file = [self getImageData:imagename];
 
-          if (image == nil) {
-            image = [self getFile:imagename];
-          }
-
-          if (image != nil) {
-            [picker addAttachmentURL:image];
+          if (file != nil) {
+            [picker addAttachmentData:file typeIdentifier:@"public.data" filename:imagename];
           }
         }
       }
-
-    // if (image != nil && image != (id)[NSNull null]) {
-    //     NSMutableArray *files = [self getFile:image];
-    //     if (file != nil) {
-    //       [picker addAttachmentURL:file withAlternateFilename:nil];
-    //     }
-    //   }
     }
 
     if (message != (id)[NSNull null]) {
@@ -742,6 +731,16 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
     CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:self.command.callbackId];
   }
+}
+
+-(NSData*)getImageData: (NSString *)imageName {
+  NSData *image = nil;
+  if (imageName != (id)[NSNull null]) {
+    if ([imageName hasPrefix:@"http"]) {
+      image = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageName]];
+    }
+  }
+  return image;
 }
 
 -(UIImage*)getImage: (NSString *)imageName {
