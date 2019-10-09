@@ -514,7 +514,6 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
       BOOL canSendAttachments = [[MFMessageComposeViewController class] respondsToSelector:@selector(canSendAttachments)];
 
       if (canSendAttachments) {
-        NSMutableArray *images = [[NSMutableArray alloc] init];
         for (NSString* imagename in imagenames) {
           NSObject *image = [self getImage:imagename];
 
@@ -523,12 +522,9 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
           }
 
           if (image != nil) {
-            [images addObject:image];
+            [picker addAttachmentURL:image];
           }
-
         }
-
-        [picker addObjectsFromArray:images];
       }
 
     // if (image != nil && image != (id)[NSNull null]) {
