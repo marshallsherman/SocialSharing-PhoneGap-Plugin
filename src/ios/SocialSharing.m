@@ -94,8 +94,10 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
     NSString *iPadCoordString = options[kShareOptionIPadCoordinates];
     NSArray *iPadCoordinates;
 
-    if (iPadCoordString != nil) {
+    if (iPadCoordString != nil && iPadCoordString != [NSNull null]) {
       iPadCoordinates = [iPadCoordString componentsSeparatedByString:@","];
+    } else {
+      iPadCoordinates = @[];
     }
 
 
@@ -329,8 +331,8 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
     if (SLComposeViewControllerResultCancelled == result) {
       CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"cancelled"];
       [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    } else if ([self isAvailableForSharing:command type:type]) {
-      CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:SLComposeViewControllerResultDone == result];
+    } else if (SLComposeViewControllerResultDone == result || [self isAvailableForSharing:command type:type]) {
+      CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:true];
       [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     } else {
       CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"not available"];
@@ -431,10 +433,9 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
     // remember the command, because we need it in the didFinishWithResult method
     _command = command;
 
-    [self.commandDelegate runInBackground:^{
+    dispatch_async(dispatch_get_main_queue(), ^{
       [[self getTopMostViewController] presentViewController:self.globalMailComposer animated:YES completion:nil];
-    }];
-
+    });
   } else {
     CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"not available"];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -468,6 +469,10 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
   NSString *result = (NSString*)CFBridgingRelease(UTTypeCopyPreferredTagWithClass(type, kUTTagClassMIMEType));
   CFRelease(ext);
   CFRelease(type);
+  if (result == nil) {
+    result = @"application/octet-stream";
+  }
+
   return result;
 }
 
@@ -533,10 +538,10 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
     }
     // remember the command, because we need it in the didFinishWithResult method
     _command = command;
-    [self.commandDelegate runInBackground:^{
+    dispatch_async(dispatch_get_main_queue(), ^{
       picker.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
       [[self getTopMostViewController] presentViewController:picker animated:NO completion:nil];
-    }];
+    });
   } else {
     CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"not available"];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
