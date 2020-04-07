@@ -523,7 +523,9 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
           NSData *file = [self getImageData:imagename];
 
           if (file != nil) {
-            [picker addAttachmentData:file typeIdentifier:@"public.data" filename:imagename];
+            NSURL *url = [NSURL URLWithString:imagename];
+            NSString *filename = [url lastPathComponent];
+            [picker addAttachmentData:file typeIdentifier:@"public.data" filename:filename];
           }
         }
       }
