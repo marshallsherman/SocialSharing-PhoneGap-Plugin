@@ -508,11 +508,11 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
     NSString *subject = [options objectForKey:@"subject"];
     NSArray *imagenames = [options objectForKey:@"images"];
 
-    MFMessageComposeViewController *picker = [[MFMessageComposeViewController alloc] init];
-    picker.messageComposeDelegate = (id) self;
+    MFMessageComposeViewController *composeVC = [[MFMessageComposeViewController alloc] init];
+    composeVC.messageComposeDelegate = (id) self;
 
     if (subject != (id)[NSNull null]) {
-      [picker setSubject:subject];
+      [composeVC setSubject:subject];
     }
 
     if (imagenames != (id)[NSNull null] && imagenames != nil && imagenames.count > 0) {
@@ -525,31 +525,31 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
           if (file != nil) {
             NSURL *url = [NSURL URLWithString:imagename];
             NSString *filename = [url lastPathComponent];
-            [picker addAttachmentData:file typeIdentifier:@"public.data" filename:filename];
+            [composeVC addAttachmentData:file typeIdentifier:@"public.data" filename:filename];
           }
         }
       }
     }
 
     if (message != (id)[NSNull null]) {
-      picker.body = message;
+      composeVC.body = message;
     }
 
     if (phonenumbers != (id)[NSNull null]) {
-      [picker setRecipients:[phonenumbers componentsSeparatedByString:@","]];
+      [composeVC setRecipients:[phonenumbers componentsSeparatedByString:@","]];
     }
     // remember the command, because we need it in the didFinishWithResult method
     _command = command;
     dispatch_async(dispatch_get_main_queue(), ^{
-        picker.modalPresentationStyle = UIModalPresentationFullScreen;
+        composeVC.modalPresentationStyle = UIModalPresentationFullScreen;
 
         if (@available(iOS 13.0, *)) {
-            picker.modalInPresentation = YES;
+            composeVC.modalInPresentation = NO;
         } else {
             // Fallback on earlier versions
         }
         
-      [[self getTopMostViewController] presentViewController:picker animated:YES completion:nil];
+      [[self getTopMostViewController] presentViewController:composeVC animated:YES completion:nil];
     });
   } else {
     CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"not available"];
