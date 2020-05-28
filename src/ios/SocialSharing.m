@@ -541,8 +541,15 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
     // remember the command, because we need it in the didFinishWithResult method
     _command = command;
     dispatch_async(dispatch_get_main_queue(), ^{
-      picker.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-      [[self getTopMostViewController] presentViewController:picker animated:NO completion:nil];
+        picker.modalPresentationStyle = UIModalPresentationFullScreen;
+
+        if (@available(iOS 13.0, *)) {
+            picker.modalInPresentation = YES;
+        } else {
+            // Fallback on earlier versions
+        }
+        
+      [[self getTopMostViewController] presentViewController:picker animated:YES completion:nil];
     });
   } else {
     CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"not available"];
