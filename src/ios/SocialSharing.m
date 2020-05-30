@@ -508,6 +508,8 @@ static NSString *const kShareOptionIPadCoordinates = @"iPadCoordinates";
     NSString *subject = [options objectForKey:@"subject"];
     NSArray *imagenames = [options objectForKey:@"images"];
 
+    [self.webView endEditing:true];
+
     MFMessageComposeViewController *composeVC = [[MFMessageComposeViewController alloc] init];
     composeVC.messageComposeDelegate = (id) self;
 
